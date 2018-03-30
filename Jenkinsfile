@@ -18,20 +18,22 @@ pipeline {
                     string(credentialsId: params.database, variable: 'database'),
                     string(credentialsId: params.password, variable: 'password')
                 ]) {
-                    // On lit le contenu du fichier conf/bdd.conf
-                    // afin de pouvoir remplacer les valeurs null par celle de l'environement d'integration
-                    // Etant donné que l'on ne peut pas décocher la sandbox de groovy on change de système pour mettre à jour le fichier
-                    String config = readFile "conf/bdd.conf"
+                    script {
+                        // On lit le contenu du fichier conf/bdd.conf
+                        // afin de pouvoir remplacer les valeurs null par celle de l'environement d'integration
+                        // Etant donné que l'on ne peut pas décocher la sandbox de groovy on change de système pour mettre à jour le fichier
+                        String config = readFile "conf/bdd.conf"
 
-                    // La méthode replace renvoie une copie de la chaîne remplacée
-                    // d'où le config = config.replace()
-                    // https://docs.oracle.com/javase/8/docs/api/java/lang/String.html#replace-java.lang.CharSequence-java.lang.CharSequence-
-                    config = config.replace("[user]", user)
-                    config = config.replace("[database]", database)
-                    config = config.replace("[password]", password)
+                        // La méthode replace renvoie une copie de la chaîne remplacée
+                        // d'où le config = config.replace()
+                        // https://docs.oracle.com/javase/8/docs/api/java/lang/String.html#replace-java.lang.CharSequence-java.lang.CharSequence-
+                        config = config.replace("[user]", user)
+                        config = config.replace("[database]", database)
+                        config = config.replace("[password]", password)
 
-                    // Maintenant que l'on a fait les modifications du json on les sauvegarde dans le fichier
-                    writeFile file: "conf/bdd.conf", text: config
+                        // Maintenant que l'on a fait les modifications du json on les sauvegarde dans le fichier
+                        writeFile file: "conf/bdd.conf", text: config
+                    }
                 }
             }
         }
